@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Shift {
+  id                     String   @id @default(cuid())
+  title                  String
+  unit                   String
+  facility               String
+  role                   String
+  startTime              DateTime
+  endTime                DateTime
+  requiredCertifications String
+  priorityLevel          String
+  overtimeAllowed        Boolean
+  unionRuleset           String
+  createdAt              DateTime @default(now())
+
+  scenarioRuns ScenarioRun[]
+}
+
+model Candidate {
+  id                    String   @id @default(cuid())
+  name                  String
+  role                  String
+  certifications        String
+  unitsQualified        String
+  facilitiesQualified   String
+  weeklyHours           Float
+  overtimeHours         Float
+  seniorityScore        Float
+  recentAcceptRate      Float
+  recentResponseMinutes Float
+  attendanceScore       Float
+  fatigueRisk           Float
+  channelPreferences    String
+  isAvailable           Boolean
+  recentOutreachCount   Int
+  lastShiftEndedAt      DateTime?
+  createdAt             DateTime @default(now())
+}
+
+model ScenarioRun {
+  id                       String   @id @default(cuid())
+  shiftId                  String
+  predictedFillProbability Float
+  recommendedSequence      String
+  managerOverride          String?
+  finalOutcome             String?
+  createdAt                DateTime @default(now())
+
+  shift Shift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+}
