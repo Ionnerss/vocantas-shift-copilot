@@ -4,7 +4,8 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -12,7 +13,7 @@ datasource db {
 }
 
 model Shift {
-  id                     String   @id @default(cuid())
+  id                     String   @id
   title                  String
   unit                   String
   facility               String
@@ -24,12 +25,13 @@ model Shift {
   overtimeAllowed        Boolean
   unionRuleset           String
   createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
 
   scenarioRuns ScenarioRun[]
 }
 
 model Candidate {
-  id                    String   @id @default(cuid())
+  id                    String   @id
   name                  String
   role                  String
   certifications        String
@@ -47,16 +49,19 @@ model Candidate {
   recentOutreachCount   Int
   lastShiftEndedAt      DateTime?
   createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
 model ScenarioRun {
-  id                       String   @id @default(cuid())
-  shiftId                  String
-  predictedFillProbability Float
-  recommendedSequence      String
-  managerOverride          String?
-  finalOutcome             String?
-  createdAt                DateTime @default(now())
+  id                        String   @id @default(cuid())
+  shiftId                   String
+  predictedFillProbability  Int
+  recommendedSequence       String
+  rankingSnapshot           String
+  managerOverrideCandidateId String?
+  managerOverrideReason     String?
+  finalOutcome              String?
+  createdAt                 DateTime @default(now())
 
   shift Shift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
 }
